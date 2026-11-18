@@ -103,6 +103,25 @@ if ( ! function_exists( 'wp_salt' ) ) {
 	}
 }
 
+if ( ! function_exists( 'wp_hash' ) ) {
+	/**
+	 * Core's wp_hash() as of WordPress 6.8, which takes the algorithm.
+	 *
+	 * @param string $data   What to hash.
+	 * @param string $scheme Which salt.
+	 * @param string $algo   The algorithm.
+	 *
+	 * @return string
+	 */
+	function wp_hash( $data, $scheme = 'auth', $algo = 'md5' ): string {
+		if ( ! in_array( $algo, hash_hmac_algos(), true ) ) {
+			throw new InvalidArgumentException( 'Unsupported hashing algorithm: ' . $algo );
+		}
+
+		return hash_hmac( $algo, $data, wp_salt( $scheme ) );
+	}
+}
+
 if ( ! function_exists( '_doing_it_wrong' ) ) {
 	/**
 	 * Record the complaint rather than raising it.

@@ -113,7 +113,7 @@ address nobody can find to erase.
 ```php
 use SugarCommerce\Privacy\{Pseudonym, Tally};
 
-$subject = Pseudonym::for_address( $email );                    // keyed with wp_salt( 'auth' )
+$subject = Pseudonym::for_address( $email );                    // core's wp_hash( $email, 'auth', 'sha256' )
 $note    = Tally::note( array( 'orders' => 2, 'licences' => 1 ), 'ticket 4411' );
 ```
 

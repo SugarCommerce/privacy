@@ -83,7 +83,13 @@ final readonly class Pseudonym {
 			return '';
 		}
 
-		$key ??= function_exists( 'wp_salt' ) ? wp_salt( 'auth' ) : '';
+		// The site's own key is core's wp_hash() with sha256 (WordPress 6.8+):
+		// an HMAC keyed with wp_salt( 'auth' ), byte for byte what this did by hand.
+		if ( null === $key && function_exists( 'wp_hash' ) ) {
+			return self::subject( wp_hash( $address, 'auth', 'sha256' ), $length );
+		}
+
+		$key ??= '';
 
 		if ( '' === $key ) {
 			throw new \LogicException( 'Pseudonym::for_address() needs a secret key outside WordPress.' );
