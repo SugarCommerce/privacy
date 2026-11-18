@@ -5,7 +5,7 @@
  * @package   SugarCommerce\Privacy
  * @copyright Copyright (c) 2026, ArrayPress Limited
  * @license   GPL-2.0-or-later
- * @since     2.0.0
+ * @since     1.0.0
  */
 
 declare( strict_types=1 );
@@ -41,14 +41,14 @@ use Stringable;
  * Other code can add groups through the `{id}_personal_data_groups` filter,
  * so an add-on's table is exported and erased with the plugin's own.
  *
- * @since 2.0.0
+ * @since 1.0.0
  */
 final class PersonalData {
 
 	/**
 	 * Rows asked for per page when a group does not say.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @var int
 	 */
@@ -57,7 +57,7 @@ final class PersonalData {
 	/**
 	 * The groups, as given.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @var array<string, array<string, mixed>>
 	 */
@@ -66,7 +66,7 @@ final class PersonalData {
 	/**
 	 * Whether register() has hooked in.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @var bool
 	 */
@@ -75,7 +75,7 @@ final class PersonalData {
 	/**
 	 * Set up a plugin's personal data.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @param string                              $id     The plugin's prefix: lower-case
 	 *                                                    letters, digits, `_` and `-`.
@@ -128,7 +128,7 @@ final class PersonalData {
 	 *                      why orders are kept.
 	 * - `group_id`         (string) The export's group id. Default `{id}-{key}`.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @param string               $key   The group's key, unique to this plugin.
 	 * @param array<string, mixed> $group The group.
@@ -147,7 +147,7 @@ final class PersonalData {
 	 * Safe to call more than once. The groups are read when WordPress asks,
 	 * so a group added later — or by the filter — is still registered.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @return self
 	 */
@@ -168,7 +168,7 @@ final class PersonalData {
 	 * A group without a label, or with neither `find` nor `erase`, is
 	 * reported through _doing_it_wrong() and left out.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @return array<string, array<string, mixed>>
 	 */
@@ -215,7 +215,7 @@ final class PersonalData {
 	 *
 	 * The `wp_privacy_personal_data_exporters` filter.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @param mixed $exporters Exporters so far.
 	 *
@@ -241,7 +241,7 @@ final class PersonalData {
 	 *
 	 * The `wp_privacy_personal_data_erasers` filter.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @param mixed $erasers Erasers so far.
 	 *
@@ -268,7 +268,7 @@ final class PersonalData {
 	 * Done when the page came back short. A row with nothing to show — every
 	 * field empty — is left out rather than exported as a blank item.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @param string $key   The group.
 	 * @param string $email The address the request is for.
@@ -318,7 +318,7 @@ final class PersonalData {
 	/**
 	 * One page of a group's erasure, in the shape WordPress wants.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @param string $key   The group.
 	 * @param string $email The address the request is for.
@@ -368,7 +368,7 @@ final class PersonalData {
 	/**
 	 * Fields as column => array{label, value, consent}.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @param array<array-key, mixed> $fields As given.
 	 *
@@ -397,7 +397,7 @@ final class PersonalData {
 	 * to the table later stays out. Without, every column but the redacted.
 	 * Columns are matched whatever their case, as Redact matches them.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @param array<string, mixed>    $group The group.
 	 * @param array<array-key, mixed> $row   The row.
@@ -445,7 +445,7 @@ final class PersonalData {
 	 * Booleans are Yes and No in the site's language; a list or an object is
 	 * JSON, since an export is no place to lose a nested value; nothing is ''.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @param mixed $value The value.
 	 *
@@ -464,7 +464,7 @@ final class PersonalData {
 	/**
 	 * A row as an array: an object's public properties, or nothing.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @param mixed $row A row as `find` returned it.
 	 *
@@ -481,7 +481,7 @@ final class PersonalData {
 	/**
 	 * What tells a row apart from the others in its group.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @param mixed                   $item_id  A column or a callable.
 	 * @param array<array-key, mixed> $row      The row.
@@ -500,7 +500,7 @@ final class PersonalData {
 	/**
 	 * A nested value as JSON.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @param mixed $value An array or object.
 	 *
@@ -516,7 +516,7 @@ final class PersonalData {
 	/**
 	 * What WordPress calls an exporter or eraser: the plugin, then the group.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @param string $label The group's label.
 	 *
@@ -529,7 +529,7 @@ final class PersonalData {
 	/**
 	 * Report a group that cannot be registered.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @param string $message What is wrong.
 	 *
@@ -537,7 +537,7 @@ final class PersonalData {
 	 */
 	private static function wrong( string $message ): void {
 		if ( function_exists( '_doing_it_wrong' ) ) {
-			_doing_it_wrong( __CLASS__, esc_html( $message ), '2.0.0' );
+			_doing_it_wrong( __CLASS__, esc_html( $message ), '1.0.0' );
 		}
 	}
 }

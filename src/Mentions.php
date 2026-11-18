@@ -40,7 +40,7 @@ final readonly class Mentions {
 	 * punctuation. No modifiers, so strip() can add /u and fall back
 	 * without it.
 	 *
-	 * @since 1.2.0
+	 * @since 1.0.0
 	 */
 	private const string ADDRESS = '/[^\\s<>()\\[\\]"\',;:]+@[^\\s<>()\\[\\]"\',;:]+/';
 
@@ -103,7 +103,7 @@ final readonly class Mentions {
 	 * string; a JSON-escaped slash or `\u00e9` stays inside the run, so an
 	 * address json_encode() wrote is replaced whole.
 	 *
-	 * @since 1.2.0
+	 * @since 1.0.0
 	 *
 	 * @param string $text Free text, perhaps naming someone.
 	 * @param string $with What each address becomes.
@@ -126,7 +126,7 @@ final readonly class Mentions {
 	 * default, with unescaped slashes, and with unescaped Unicode. An empty
 	 * form is never returned: it would match everything.
 	 *
-	 * @since 1.1.0
+	 * @since 1.0.0
 	 *
 	 * @param string $key A matching key, from key().
 	 *

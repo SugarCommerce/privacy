@@ -62,7 +62,7 @@ final readonly class Redact {
 	 * The allow-list form: a column nobody named — one added after the
 	 * export was written — stays out.
 	 *
-	 * @since 1.1.0
+	 * @since 1.0.0
 	 *
 	 * @param string ...$columns Column names, in any case.
 	 *

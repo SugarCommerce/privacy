@@ -65,7 +65,7 @@ final readonly class Pseudonym {
 	 * own `wp_salt( 'auth' )`: secret, per site, and already there. Outside
 	 * WordPress a key has to be passed.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @param string      $address The address the request was for.
 	 * @param string|null $key     A secret. Null for the site's auth salt.

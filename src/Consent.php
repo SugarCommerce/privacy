@@ -78,7 +78,7 @@ enum Consent: string {
 	 * What a WordPress personal data export shows. `value` stays English,
 	 * for a log or a file a program reads.
 	 *
-	 * @since 2.0.0
+	 * @since 1.0.0
 	 *
 	 * @return string
 	 */
