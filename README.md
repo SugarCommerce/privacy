@@ -129,6 +129,14 @@ stays, without the person — or run it in a transaction. Run it all or
 nothing: one that stops halfway leaves records half-anonymised and an audit row
 saying it was done.
 
+## Layout
+
+* `src/PersonalData.php`: the exporters and erasers WordPress calls;
+  `src/Traits/PersonalData/` holds exporting and erasing.
+* `src/Mentions.php`, `Pseudonym.php`, `Redact.php` and `Tally.php`: the queues,
+  the audit row's keyed hash, masking and the counts by kind.
+* `src/Models/`: data shapes. `Consent.php` reads a stored yes, no or not asked.
+
 ## Security
 
 * An export carries only what you name: `fields` is an allow-list, and without it the `redact` columns stay out

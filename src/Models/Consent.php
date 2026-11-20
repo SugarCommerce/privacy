@@ -10,7 +10,7 @@
 
 declare( strict_types=1 );
 
-namespace SugarCommerce\Privacy;
+namespace SugarCommerce\Privacy\Models;
 
 /**
  * Enum Consent

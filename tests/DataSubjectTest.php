@@ -14,7 +14,11 @@ namespace SugarCommerce\Privacy\Tests;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use SugarCommerce\Privacy\{Consent, Mentions, Pseudonym, Redact, Tally};
+use SugarCommerce\Privacy\Mentions;
+use SugarCommerce\Privacy\Models\Consent;
+use SugarCommerce\Privacy\Pseudonym;
+use SugarCommerce\Privacy\Redact;
+use SugarCommerce\Privacy\Tally;
 
 /**
  * Class DataSubjectTest

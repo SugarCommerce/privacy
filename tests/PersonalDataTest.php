@@ -14,7 +14,7 @@ use InvalidArgumentException;
 use LogicException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use SugarCommerce\Privacy\Consent;
+use SugarCommerce\Privacy\Models\Consent;
 use SugarCommerce\Privacy\PersonalData;
 use SugarCommerce\Privacy\Pseudonym;
 use SugarCommerce\Privacy\Tally;

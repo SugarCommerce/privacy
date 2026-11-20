@@ -13,7 +13,7 @@ declare( strict_types=1 );
 namespace SugarCommerce\Privacy\Traits\PersonalData;
 
 use BackedEnum;
-use SugarCommerce\Privacy\Consent;
+use SugarCommerce\Privacy\Models\Consent;
 use SugarCommerce\Privacy\Redact;
 use Stringable;
 
