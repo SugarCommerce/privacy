@@ -148,6 +148,38 @@ final class DataSubjectTest extends TestCase {
 		$this->assertTrue( Mentions::any( (string) json_encode( array( 'to' => $address ), JSON_UNESCAPED_SLASHES ), array( $address ) ) );
 	}
 
+	/**
+	 * The pattern for an address used to try every position of a long run
+	 * of characters for an @ at its end: without PCRE's JIT, 50 KB of a
+	 * logged payload took fifteen seconds.
+	 */
+	public function test_strip_costs_what_reading_the_text_costs(): void {
+		$jit = ini_get( 'pcre.jit' );
+
+		ini_set( 'pcre.jit', '0' );
+
+		try {
+			$from = microtime( true );
+			$long = str_repeat( 'a', 50000 ) . '@';
+
+			$this->assertSame( $long, Mentions::strip( $long ) );
+			$this->assertSame( "\xff" . $long, Mentions::strip( "\xff" . $long ) );
+			$this->assertSame( 'x [address] y', Mentions::strip( 'x ' . str_repeat( 'a', 50000 ) . '@example.com y' ) );
+			$this->assertLessThan( 1.0, microtime( true ) - $from );
+		} finally {
+			ini_set( 'pcre.jit', (string) $jit );
+		}
+	}
+
+	/**
+	 * Every match starts where a run of address characters starts, as it
+	 * did before the pattern was told so.
+	 */
+	public function test_strip_replaces_whole_runs(): void {
+		$this->assertSame( '[address] [address] @ x@ [address]', Mentions::strip( 'a@b @@b @ x@ a@b@c' ) );
+		$this->assertSame( '<[address]>,([address])', Mentions::strip( '<a.b@c.d>,(e@f)' ) );
+	}
+
 	/* ─── Consent ──────────────────────────────────────────────────────── */
 
 	/**

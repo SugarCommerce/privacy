@@ -40,9 +40,15 @@ final readonly class Mentions {
 	 * punctuation. No modifiers, so strip() can add /u and fall back
 	 * without it.
 	 *
+	 * It starts only where a run of those characters starts. Every match
+	 * did anyway -- the leftmost start of a run that holds an address is
+	 * the run's own -- but without being told, the pattern tried every
+	 * position of a long run that ends in an @ before giving up: 50 KB of
+	 * a logged payload took fifteen seconds where PCRE has no JIT.
+	 *
 	 * @since 1.0.0
 	 */
-	private const string ADDRESS = '/[^\\s<>()\\[\\]"\',;:]+@[^\\s<>()\\[\\]"\',;:]+/';
+	private const string ADDRESS = '/(?<![^\\s<>()\\[\\]"\',;:])[^\\s<>()\\[\\]"\',;:]+@[^\\s<>()\\[\\]"\',;:]+/';
 
 	/**
 	 * An address as a matching key: trimmed and case-folded.
