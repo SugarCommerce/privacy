@@ -80,12 +80,22 @@ final readonly class Mentions {
 	 * @return bool
 	 */
 	public static function any( string $text, array $values ): bool {
-		$text = mb_strtolower( $text );
+		$texts = array( mb_strtolower( $text ) );
+
+		// Case is folded on the text, and `\u00c9` -- a capital as JSON
+		// escapes it -- is not a letter to fold: it would never be the
+		// `\u00e9` of the address typed in small letters. So the text is
+		// read with its escapes undone as well.
+		if ( str_contains( $text, '\\' ) ) {
+			$texts[] = mb_strtolower( self::unescaped( $text ) );
+		}
 
 		foreach ( $values as $value ) {
 			foreach ( self::forms( self::key( (string) $value ) ) as $form ) {
-				if ( str_contains( $text, $form ) ) {
-					return true;
+				foreach ( $texts as $haystack ) {
+					if ( str_contains( $haystack, $form ) ) {
+						return true;
+					}
 				}
 			}
 		}
@@ -123,6 +133,33 @@ final readonly class Mentions {
 		// rather than hand the text back with the address still in it.
 		return preg_replace_callback( self::ADDRESS . 'u', $address, $text )
 			?? (string) preg_replace_callback( self::ADDRESS, $address, $text );
+	}
+
+	/**
+	 * Text with JSON's `\\uXXXX` and `\\/` escapes written out.
+	 *
+	 * Only the escapes: the text is not JSON as a whole, and one that is
+	 * not a character on its own -- half of a surrogate pair -- is left as
+	 * it was.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $text Stored text.
+	 *
+	 * @return string
+	 */
+	private static function unescaped( string $text ): string {
+		$text = str_replace( '\\/', '/', $text );
+
+		return preg_replace_callback(
+			'/\\\\u[dD][89abAB][0-9a-fA-F]{2}\\\\u[dD][c-fC-F][0-9a-fA-F]{2}|\\\\u[0-9a-fA-F]{4}/',
+			static function ( array $escape ): string {
+				$character = json_decode( '"' . $escape[0] . '"' );
+
+				return is_string( $character ) ? $character : $escape[0];
+			},
+			$text
+		) ?? $text;
 	}
 
 	/**

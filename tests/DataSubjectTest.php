@@ -149,6 +149,21 @@ final class DataSubjectTest extends TestCase {
 	}
 
 	/**
+	 * Case is folded on the text, and an escape is not a letter: a capital
+	 * JSON wrote as `É` stays `É`, which is not the `é` of
+	 * the address as the person typed it today. So the queued payload for
+	 * Élodie@example.com was missed by an erasure for élodie@example.com.
+	 */
+	public function test_an_address_json_escaped_in_capitals_is_found(): void {
+		$this->assertTrue( Mentions::any( (string) json_encode( array( 'to' => 'Élodie@Example.com' ) ), array( 'élodie@example.com' ) ) );
+		$this->assertTrue( Mentions::any( (string) json_encode( array( 'to' => 'élodie@example.com' ) ), array( 'ÉLODIE@example.com' ) ) );
+		$this->assertTrue( Mentions::any( '{"to":"ÉLODIE\/OPS@EXAMPLE.COM"}', array( 'élodie/ops@example.com' ) ) );
+		$this->assertTrue( Mentions::any( '{"to":"\u00C9\ud83d\ude00@example.com"}', array( 'é😀@example.com' ) ) );
+		$this->assertFalse( Mentions::any( '{"to":"Émile@example.com"}', array( 'élodie@example.com' ) ) );
+		$this->assertFalse( Mentions::any( '{"to":"\ud800 broken"}', array( 'ada@example.com' ) ) );
+	}
+
+	/**
 	 * The pattern for an address used to try every position of a long run
 	 * of characters for an @ at its end: without PCRE's JIT, 50 KB of a
 	 * logged payload took fifteen seconds.
