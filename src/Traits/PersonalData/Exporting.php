@@ -171,6 +171,11 @@ trait Exporting {
 	/**
 	 * What tells a row apart from the others in its group.
 	 *
+	 * A string is always a column. Asked whether it was callable first,
+	 * `key`, `date`, `count` and every other column named like a PHP
+	 * function were called as that function: `key` gave every row the
+	 * same id, which WordPress merges into one item.
+	 *
 	 * @since 1.0.0
 	 *
 	 * @param mixed                   $item_id  A column or a callable.
@@ -180,7 +185,7 @@ trait Exporting {
 	 * @return string
 	 */
 	private static function item_id( mixed $item_id, array $row, string $fallback ): string {
-		$value = is_callable( $item_id )
+		$value = ! is_string( $item_id ) && is_callable( $item_id )
 			? $item_id( $row )
 			: ( array_change_key_case( $row )[ strtolower( (string) $item_id ) ] ?? null );
 

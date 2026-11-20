@@ -12,6 +12,7 @@ namespace SugarCommerce\Privacy\Tests;
 use ArrayIterator;
 use InvalidArgumentException;
 use LogicException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use SugarCommerce\Privacy\Consent;
 use SugarCommerce\Privacy\PersonalData;
@@ -216,6 +217,55 @@ final class PersonalDataTest extends TestCase {
 
 		$this->assertSame( 'licences-K-1', $item['item_id'] );
 		$this->assertSame( '3 of 5', $item['data'][0]['value'] );
+	}
+
+	/**
+	 * A column named like a PHP function -- key, date, count, current -- was
+	 * called as that function: `key` gave every row the same id, so
+	 * WordPress merged them into one item, and `date` failed the export.
+	 */
+	#[DataProvider( 'function_names' )]
+	public function test_an_item_id_column_is_a_column_whatever_it_is_called( string $column ): void {
+		$group = array(
+			'label'   => 'Licences',
+			'find'    => static fn (): array => array( array( $column => 'K-1' ), array( $column => 'K-2' ) ),
+			'item_id' => $column,
+		);
+
+		$data = ( new PersonalData( 'shop', '', array( 'licences' => $group ) ) )->export( 'licences', 'ada@example.com' )['data'];
+
+		$this->assertSame( array( 'licences-K-1', 'licences-K-2' ), array_column( $data, 'item_id' ) );
+	}
+
+	/**
+	 * @return array<string, array{string}>
+	 */
+	public static function function_names(): array {
+		return array(
+			'key'     => array( 'key' ),
+			'date'    => array( 'date' ),
+			'count'   => array( 'count' ),
+			'current' => array( 'current' ),
+		);
+	}
+
+	public function test_an_item_id_callable_is_still_called(): void {
+		$group = array(
+			'label'   => 'Licences',
+			'find'    => static fn (): array => array( array( 'k' => 'a' ) ),
+			'item_id' => array( new class() {
+				/**
+				 * @param array<string, mixed> $row The row.
+				 */
+				public function id( array $row ): string {
+					return strtoupper( (string) $row['k'] );
+				}
+			}, 'id' ),
+		);
+
+		$data = ( new PersonalData( 'shop', '', array( 'licences' => $group ) ) )->export( 'licences', 'ada@example.com' )['data'];
+
+		$this->assertSame( 'licences-A', $data[0]['item_id'] );
 	}
 
 	public function test_a_row_with_nothing_to_show_is_left_out_and_no_id_is_its_place(): void {

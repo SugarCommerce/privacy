@@ -122,6 +122,7 @@ final class PersonalData {
 	 *                      `fields` is not given.
 	 * - `item_id`          (string|callable) The column, or a callable given
 	 *                      the row, that tells two rows apart. Default `id`.
+	 *                      A string is always a column, never a function name.
 	 * - `per_page`         (int) Rows asked for per page. Default 100.
 	 * - `erase`            (callable) `( string $email, int $page )` to an
 	 *                      array of `removed` and `retained` (counts or
