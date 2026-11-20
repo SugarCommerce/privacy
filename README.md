@@ -103,10 +103,10 @@ $rows                    = Redact::rows( $rows, 'access_token', 'email_hash' );
 ```
 
 `Mentions::any()` looks for the address as typed and in each form
-`json_encode()` writes it — `/` as `\/`, `é` as `é` — case-folded. It does
-not normalise Unicode. `strip()` is looser than an address validator on
-purpose: a false positive costs a word of an error message, a miss keeps an
-address nobody can find to erase.
+`json_encode()` writes it — `/` as `\/`, `é` as `\u00e9` — case-folded, an
+escaped capital included. It does not normalise Unicode. `strip()` is looser
+than an address validator on purpose: a false positive costs a word of an
+error message, a miss keeps an address nobody can find to erase.
 
 ## The audit row
 
@@ -129,23 +129,17 @@ stays, without the person — or run it in a transaction. Run it all or
 nothing: one that stops halfway leaves records half-anonymised and an audit row
 saying it was done.
 
-## Moving from the SugarCommerce SaaS package
+## Security
 
-From the retired `sugarcommerce/data-subject` (`SugarCommerce\DataSubject`).
-Everything not listed keeps its name and behaviour under
-`SugarCommerce\Privacy`.
-
-| Old | New |
-|---|---|
-| `sugarcommerce/data-subject` | `sugarcommerce/privacy` |
-| `SugarCommerce\DataSubject\*` | `SugarCommerce\Privacy\*` |
-| `Tally::summary( $counts )` said `nothing held` | the same, in the site's language; `Tally::NOTHING` is still the English |
-| `Pseudonym::subject( hash_hmac( 'sha256', $email, $key ) )` | `Pseudonym::for_address( $email, $key )`, or no key for the site's salt |
-| `Consent::of( $v )->value` in an export | `Consent::of( $v )->label()` — translated; `value` and `cell()` unchanged |
-| PHP 8.5 | PHP 8.3 |
-
-New: `PersonalData`, which registers WordPress exporters and erasers from
-arrays. Text domain `sugarcommerce`.
+* An export carries only what you name: `fields` is an allow-list, and without it the `redact` columns stay out
+  whatever their case
+* A blank address is never looked up: export and erase answer with nothing rather than ask `find` or `erase` for ''
+* A queued payload is found however JSON wrote the address in it -- escaped slashes, escaped Unicode, an escaped capital
+* `Mentions::strip()` costs what reading the text costs, on a host without PCRE's JIT too
+* The audit row names nobody: a pseudonym is keyed with the site's salt, and refuses to run with no key at all
+* Consent reads yes only for exactly 1, '1' or true, and "not asked" is never shown as no
+* A column used as `item_id` is a column, even when it is named like a PHP function (`key`, `date`)
+* No endpoint of its own: WordPress checks the capability and the nonce before an exporter or eraser runs
 
 ## Requirements
 
